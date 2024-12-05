@@ -59,4 +59,30 @@ public class BookService {
             stmt.executeUpdate();
         }
     }
+
+    public  void borrowBook(int bookId, int userId) throws SQLException {
+        String sql = "UPDATE books " +
+                "SET available = FALSE, borrowed_for = ? " +
+                "WHERE id = ? AND available = TRUE";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, userId);
+            stmt.setInt(2, bookId);
+            int rowsUpdated = stmt.executeUpdate();
+            if (rowsUpdated == 0) {
+                throw  new SQLException("This book is not available right now!");
+            }
+        }
+    }
+
+    public void returnBook(int bookId) throws SQLException {
+        String sql = "UPDATE books " +
+                "SET available = TRUE, borrowed_for = NULL " +
+                "WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, bookId);
+            stmt.executeUpdate();
+        }
+    }
 }

@@ -60,6 +60,26 @@ public class BookService {
         }
     }
 
+    public List<Book> searchBooks(String query) throws SQLException {
+        String sql = "SELECT * FROM books WHERE title LIKE UPPER(?) OR author LIKE UPPER(?)";
+        List<Book> books = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + query + "%");
+            stmt.setString(2, "%" + query + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                books.add(new Book(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("author"),
+                        rs.getBoolean("available")
+                ));
+            }
+        }
+        return books;
+    }
+
     public  void borrowBook(int bookId, int userId) throws SQLException {
         String sql = "UPDATE books " +
                 "SET available = FALSE, borrowed_for = ? " +

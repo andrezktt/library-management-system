@@ -15,8 +15,7 @@ public class Main {
         UserService userService = new UserService();
 
         try {
-            bookService.borrowBook(1, 2);
-            List<Book> books = bookService.getBooks();
+            List<Book> books = bookService.searchBooks("IDIOTA");
             for (Book book : books) {
                 System.out.println("\nTítulo: " + book.getTitle() + "\nAutor: " + book.getAuthor() + "\nDisponibilidade: " + (book.isAvailable() ? "Disponível" : "Indisponível"));
             }

@@ -30,7 +30,7 @@ public class Main {
             switch (option) {
                 case 1 -> bookMenu();
                 case 2 -> userMenu();
-//                case 3 -> borrowMenu();
+                case 3 -> borrowMenu();
                 case 0 -> {
                     System.out.println("Saindo do sistema... Até logo!");
                     System.exit(0);
@@ -58,7 +58,7 @@ public class Main {
             case 3 -> deleteBook();
             case 4 -> updateBook();
             case 5 -> searchBook();
-            case 0 -> System.out.println("Voltando ao menu principal.");
+            case 0 -> System.out.println("\nVoltando ao menu principal...");
             default -> System.out.println("Opção inválida. Tente novamente.");
         }
     }
@@ -85,23 +85,23 @@ public class Main {
             default -> System.out.println("Opção inválida. Tente novamente.");
         }
     }
-//
-//    private static void borrowMenu() {
-//        System.out.println("\n=== Gerenciamento de Empréstimos ===");
-//        System.out.println("1. Emprestar livro");
-//        System.out.println("2. Devolver livro");
-//        System.out.println("0. Voltar");
-//        System.out.print("Escolha uma opção: ");
-//        int option = scanner.nextInt();
-//        scanner.nextLine();
-//
-//        switch (option) {
-//            case 1 -> borrowBook();
-//            case 2 -> returnBook();
-//            case 0 -> System.out.println("Voltando ao menu principal.");
-//            default -> System.out.println("Opção inválida. Tente novamente.");
-//        }
-//    }
+
+    private static void borrowMenu() {
+        System.out.println("\n=== Gerenciamento de Empréstimos ===");
+        System.out.println("1. Emprestar livro");
+        System.out.println("2. Devolver livro");
+        System.out.println("0. Voltar");
+        System.out.print("Escolha uma opção: ");
+        int option = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (option) {
+            case 1 -> borrowBook();
+            case 2 -> returnBook();
+            case 0 -> System.out.println("Voltando ao menu principal.");
+            default -> System.out.println("Opção inválida. Tente novamente.");
+        }
+    }
 
     private static void addBook() {
         System.out.print("Digite o título do livro: ");
@@ -271,6 +271,32 @@ public class Main {
             }
         } catch (SQLException e) {
             System.err.println("Erro ao buscar usuário: " + e.getMessage());
+        }
+    }
+
+    public static void borrowBook() {
+        System.out.print("Digite o ID do livro a ser emprestado: ");
+        int bookId = scanner.nextInt();
+        System.out.print("Digite o ID do usuário que fará o empréstimo: ");
+        int userId = scanner.nextInt();
+
+        try {
+            bookService.borrowBook(bookId, userId);
+            System.out.println("Livro emprestado com sucesso!");
+        } catch (SQLException e) {
+            System.err.println("Erro emprestar livro: " + e.getMessage());
+        }
+    }
+
+    public static void returnBook() {
+        System.out.print("Digite o ID do livro a ser devolvido: ");
+        int bookId = scanner.nextInt();
+
+        try {
+            bookService.returnBook(bookId);
+            System.out.println("Livro devolvido com sucesso!");
+        } catch (SQLException e) {
+            System.err.println("Erro devolver livro: " + e.getMessage());
         }
     }
 }

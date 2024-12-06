@@ -1,7 +1,6 @@
 package org.example.services;
 
-import org.example.database.DatabaseConnection;
-import org.example.models.Book;
+import org.example.config.DatabaseConnection;
 import org.example.models.User;
 
 import java.sql.*;

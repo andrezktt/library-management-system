@@ -1,9 +1,8 @@
 package org.example.services;
 
-import org.example.database.DatabaseConnection;
+import org.example.config.DatabaseConnection;
 import org.example.models.Book;
 
-import javax.sound.midi.Soundbank;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;

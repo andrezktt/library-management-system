@@ -29,7 +29,7 @@ public class Main {
 
             switch (option) {
                 case 1 -> bookMenu();
-//                case 2 -> userMenu();
+                case 2 -> userMenu();
 //                case 3 -> borrowMenu();
                 case 0 -> {
                     System.out.println("Saindo do sistema... Até logo!");
@@ -63,28 +63,28 @@ public class Main {
         }
     }
 
-//    private static void userMenu() {
-//        System.out.println("\n=== Gerenciamento de Usuários ===");
-//        System.out.println("1. Adicionar usuário");
-//        System.out.println("2. Listar usuários");
-//        System.out.println("3. Remover usuário");
-//        System.out.println("4. Atualizar usuário");
-//        System.out.println("5. Pesquisar usuários");
-//        System.out.println("0. Voltar");
-//        System.out.print("Escolha uma opção: ");
-//        int option = scanner.nextInt();
-//        scanner.nextLine();
-//
-//        switch (option) {
-//            case 1 -> addUser();
-//            case 2 -> getUsers();
-//            case 3 -> deleteUser();
-//            case 4 -> updateUser();
-//            case 5 -> searchUser();
-//            case 0 -> System.out.println("Voltando ao menu principal.");
-//            default -> System.out.println("Opção inválida. Tente novamente.");
-//        }
-//    }
+    private static void userMenu() {
+        System.out.println("\n=== Gerenciamento de Usuários ===");
+        System.out.println("1. Adicionar usuário");
+        System.out.println("2. Listar usuários");
+        System.out.println("3. Remover usuário");
+        System.out.println("4. Atualizar usuário");
+        System.out.println("5. Pesquisar usuários");
+        System.out.println("0. Voltar");
+        System.out.print("Escolha uma opção: ");
+        int option = scanner.nextInt();
+        scanner.nextLine();
+
+        switch (option) {
+            case 1 -> addUser();
+            case 2 -> getUsers();
+            case 3 -> deleteUser();
+            case 4 -> updateUser();
+            case 5 -> searchUser();
+            case 0 -> System.out.println("Voltando ao menu principal.");
+            default -> System.out.println("Opção inválida. Tente novamente.");
+        }
+    }
 //
 //    private static void borrowMenu() {
 //        System.out.println("\n=== Gerenciamento de Empréstimos ===");
@@ -179,11 +179,98 @@ public class Main {
                     System.out.println("\nID: " + book.getId()
                             + "\nTítulo: " + book.getTitle()
                             + "\nAutor: " + book.getAuthor()
-                            + "\nDisponibilidade: " + (book.isAvailable() ? "Disponível" : "Indisponível"));
+                            + "\nDisponibilidade: " + (book.isAvailable() ? "Disponível" : "Indisponível")
+                    );
                 }
             }
         } catch (SQLException e) {
             System.err.println("Erro ao buscar livro: " + e.getMessage());
+        }
+    }
+
+    private static void addUser() {
+        System.out.print("Digite o nome do usuário: ");
+        String name = scanner.nextLine();
+        System.out.print("Digite o email do usuário: ");
+        String email = scanner.nextLine();
+
+        User user = new User(0, name, email);
+        try {
+            userService.addUser(user);
+            System.out.println("Usuário adicionado com sucesso!");
+        } catch (SQLException e) {
+            System.err.println("Erro ao adicionar usuário: " + e.getMessage());
+        }
+    }
+
+    public static void getUsers() {
+        try {
+            List<User> users = userService.getUsers();
+            if (users.isEmpty()) {
+                System.out.println("Nenhum usuário encontrado!");
+            } else {
+                System.out.println("Usuários encontrados: ");
+                for (User user : users) {
+                    System.out.println("\nID: " + user.getId()
+                            + "\nNome: " + user.getName()
+                            + "\nEmail: " + user.getEmail()
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar usuários: " + e.getMessage());
+        }
+    }
+
+    public static void deleteUser() {
+        System.out.print("Digite o ID do usuário que deseja excluir: ");
+        int userId = scanner.nextInt();
+
+        try {
+            userService.deleteUser(userId);
+            System.out.println("Usuário excluído com sucesso!");
+        } catch (SQLException e) {
+            System.err.println("Erro ao deletar usuário: " + e.getMessage());
+        }
+    }
+
+    public static void updateUser() {
+        System.out.print("ID do usuário que deseja alterar: ");
+        int userId = scanner.nextInt();
+        scanner.nextLine();
+        System.out.print("Digite o novo nome do usuário: ");
+        String name = scanner.nextLine();
+        System.out.print("Digite o novo email do usuário: ");
+        String email = scanner.nextLine();
+
+        User user = new User(userId, name, email);
+        try {
+            userService.updateUser(user);
+            System.out.println("Usuário atualizado com sucesso!");
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar usuário: " + e.getMessage());
+        }
+    }
+
+    public static void searchUser() {
+        System.out.print("Digite o nome do usuário que deseja buscar: ");
+        String userName = scanner.nextLine();
+
+        try {
+            List<User> users = userService.searchUser(userName);
+            if (users.isEmpty()) {
+                System.out.println("Nenhum usuário encontrado!");
+            } else {
+                System.out.println("Usuários encontrados:");
+                for (User user : users) {
+                    System.out.println("\nID: " + user.getId()
+                            + "\nNome: " + user.getName()
+                            + "\nEmail: " + user.getEmail()
+                    );
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuário: " + e.getMessage());
         }
     }
 }

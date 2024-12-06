@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.database.DatabaseConnection;
+import org.example.models.Book;
 import org.example.models.User;
 
 import java.sql.*;
@@ -53,5 +54,23 @@ public class UserService {
             stmt.setInt(1, id);
             stmt.executeUpdate();
         }
+    }
+
+    public List<User> searchUser(String query) throws SQLException {
+        String sql = "SELECT * FROM users WHERE name LIKE UPPER(?)";
+        List<User> users = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + query + "%");
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                users.add(new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email")
+                ));
+            }
+        }
+        return users;
     }
 }

@@ -1,6 +1,7 @@
 package org.example;
 
 import org.example.controllers.BookController;
+import org.example.controllers.BorrowController;
 import org.example.controllers.UserController;
 
 import java.util.Scanner;
@@ -10,6 +11,7 @@ public class Main {
     private static final Scanner scanner = new Scanner(System.in);
     private static final BookController bookController = new BookController();
     private static final UserController userController = new UserController();
+    private static final BorrowController borrowController = new BorrowController();
 
     public static void main(String[] args) {
 
@@ -26,7 +28,7 @@ public class Main {
             switch (option) {
                 case 1 -> bookMenu();
                 case 2 -> userMenu();
-//                case 3 -> borrowMenu();
+                case 3 -> borrowMenu();
                 case 0 -> {
                     System.out.println("\nSaindo do sistema... Até logo!");
                     System.exit(0);
@@ -88,20 +90,23 @@ public class Main {
         }
     }
 
-//    private static void borrowMenu() {
-//        System.out.println("\n=== Gerenciamento de Empréstimos ===");
-//        System.out.println("1. Emprestar livro");
-//        System.out.println("2. Devolver livro");
-//        System.out.println("0. Voltar");
-//        System.out.print("Escolha uma opção: ");
-//        int option = scanner.nextInt();
-//        scanner.nextLine();
-//
-//        switch (option) {
-//            case 1 -> borrowBook();
-//            case 2 -> returnBook();
-//            case 0 -> System.out.println("Voltando ao menu principal.");
-//            default -> System.out.println("Opção inválida. Tente novamente.");
-//        }
-//    }
+    private static void borrowMenu() {
+        boolean status = true;
+        while (status) {
+            System.out.println("\n=== Gerenciamento de Empréstimos ===");
+            System.out.println("1. Listar empréstimos");
+            System.out.println("2. Emprestar livro");
+            System.out.println("0. Voltar");
+            System.out.print("Escolha uma opção: ");
+            int option = scanner.nextInt();
+            scanner.nextLine();
+
+            switch (option) {
+                case 1 -> borrowController.getBorrows();
+                case 2 -> borrowController.borrowBook();
+                case 0 -> status = false;
+                default -> System.out.println("Opção inválida. Tente novamente.");
+            }
+        }
+    }
 }

@@ -20,23 +20,6 @@ public class BookController {
         service.addBook(book);
     }
 
-    public void getBooks() {
-        List<Book> books = service.getBooks();
-        for (Book book : books) {
-            System.out.println("\nID: " + book.getId()
-                    + "\nTítulo: " + book.getTitle()
-                    + "\nAutor: " + book.getAuthor()
-                    + "\nDisponibilidade: " + (book.isAvailable() ? "Disponível" : "Indisponível")
-            );
-        }
-    }
-
-    public void deleteBook() {
-        System.out.print("\nDigite o ID do livro que deseja excluir: ");
-        int bookId = scanner.nextInt();
-        service.deleteBook(bookId);
-    }
-
     public void updateBook() {
         System.out.print("\nID do livro que deseja alterar: ");
         int bookId = scanner.nextInt();
@@ -48,6 +31,35 @@ public class BookController {
 
         Book book = new Book(bookId, title, author, true);
         service.updateBook(book);
+    }
+
+    public void deleteBook() {
+        System.out.print("\nDigite o ID do livro que deseja excluir: ");
+        int bookId = scanner.nextInt();
+        service.deleteBook(bookId);
+    }
+
+    public void findBookById() {
+        System.out.print("\nDigite o ID do livro que buscar: ");
+        int bookId = scanner.nextInt();
+        Book book = service.findBookById(bookId);
+        System.out.println("\nID: " + book.getId()
+                + "\nTítulo: " + book.getTitle()
+                + "\nAutor: " + book.getAuthor()
+                + "\nDisponibilidade: " + (book.isAvailable() ? "Disponível" : "Indisponível")
+        );
+    }
+
+    public void getBooks() {
+        List<Book> books = service.getBooks();
+        System.out.println("\nLivros encontrados: ");
+        for (Book book : books) {
+            System.out.println("\nID: " + book.getId()
+                    + "\nTítulo: " + book.getTitle()
+                    + "\nAutor: " + book.getAuthor()
+                    + "\nDisponibilidade: " + (book.isAvailable() ? "Disponível" : "Indisponível")
+            );
+        }
     }
 
     public void searchBook() {

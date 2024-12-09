@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.config.DatabaseConnection;
+import org.example.daos.UserDAO;
 import org.example.models.User;
 
 import java.sql.*;
@@ -9,67 +10,68 @@ import java.util.List;
 
 public class UserService {
 
-    public void addUser(User user) throws SQLException {
-        String sql = "INSERT INTO users (name, email) VALUES (?, ?)";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, user.getName());
-            stmt.setString(2, user.getEmail());
-            stmt.executeUpdate();
+    UserDAO dao = new UserDAO();
+
+    public void addUser(User user) {
+        try {
+            dao.add(user);
+            System.out.println("Usuário adicionado com sucesso!");
+        } catch (SQLException e) {
+            System.err.println("Erro ao adicionar usuário: " + e.getMessage());
         }
     }
 
-    public List<User> getUsers() throws SQLException {
-        String sql = "SELECT * FROM users";
-        List<User> users = new ArrayList<>();
-        try (Connection conn = DatabaseConnection.getConnection();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-            while (rs.next()) {
-                users.add(new User(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("email")
-                ));
+    public void updateUser(User user) {
+        try {
+            dao.update(user);
+            System.out.println("Usuário atualizado com sucesso!");
+        } catch (SQLException e) {
+            System.err.println("Erro ao atualizar usuário: " + e.getMessage());
+        }
+    }
+
+    public void deleteUser(int id) {
+        try {
+            dao.delete(id);
+            System.out.println("Usuário excluído com sucesso!");
+        } catch (SQLException e) {
+            System.err.println("Erro ao deletar usuário: " + e.getMessage());
+        }
+    }
+
+    public User findUserById(int id) {
+        try {
+            return dao.findById(id);
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuário: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<User> getUsers() {
+        try {
+            List<User> users = dao.getAll();
+            if (users.isEmpty()) {
+                System.out.println("Nenhum usuário encontrado!");
             }
+            return users;
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar usuários: " + e.getMessage());
         }
-        return users;
+        return null;
     }
 
-    public void updateUser(User user) throws SQLException {
-        String sql = "UPDATE users SET name = ?, email = ? WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, user.getName());
-            stmt.setString(2, user.getEmail());
-            stmt.setInt(3, user.getId());
-        }
-    }
-
-    public void deleteUser(int id) throws SQLException {
-        String sql = "DELETE FROM users WHERE id = ?";
-        try (Connection conn = DatabaseConnection.getConnection();
-            PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            stmt.executeUpdate();
-        }
-    }
-
-    public List<User> searchUser(String query) throws SQLException {
-        String sql = "SELECT * FROM users WHERE name LIKE UPPER(?)";
-        List<User> users = new ArrayList<>();
-        try (Connection conn = DatabaseConnection.getConnection();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, "%" + query + "%");
-            ResultSet rs = stmt.executeQuery();
-            while (rs.next()) {
-                users.add(new User(
-                        rs.getInt("id"),
-                        rs.getString("name"),
-                        rs.getString("email")
-                ));
+    public List<User> searchUser(String name) {
+        try {
+            List<User> users = dao.searchByName(name);
+            if (users.isEmpty()) {
+                System.out.println("Nenhum usuário encontrado!");
+            } else {
+                return users;
             }
+        } catch (SQLException e) {
+            System.err.println("Erro ao buscar usuário: " + e.getMessage());
         }
-        return users;
+        return null;
     }
 }

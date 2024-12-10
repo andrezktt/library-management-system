@@ -2,7 +2,6 @@ package org.example.services;
 
 import org.example.daos.BookDAO;
 import org.example.models.Book;
-import org.example.models.User;
 
 import java.sql.*;
 import java.util.List;
@@ -23,7 +22,6 @@ public class BookService {
     public void updateBook(Book book) {
         try {
             bookDAO.update(book);
-            System.out.println("Livro atualizado com sucesso!");
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar livro: " + e.getMessage());
         }
@@ -70,6 +68,32 @@ public class BookService {
             }
         } catch (SQLException e) {
             System.err.println("Erro ao buscar livro: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Book> getAvailableBooks() {
+        try {
+            List<Book> books = bookDAO.getAvailable();
+            if (books.isEmpty()) {
+                System.out.println("Nenhum livro encontrado!");
+            }
+            return books;
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar livros disponíveis: " + e.getMessage());
+        }
+        return null;
+    }
+
+    public List<Book> getUnavailableBooks() {
+        try {
+            List<Book> books = bookDAO.getUnavailable();
+            if (books.isEmpty()) {
+                System.out.println("Nenhum livro encontrado!");
+            }
+            return books;
+        } catch (SQLException e) {
+            System.err.println("Erro ao listar livros indisponíveis: " + e.getMessage());
         }
         return null;
     }

@@ -31,6 +31,7 @@ public class BookController {
 
         Book book = new Book(bookId, title, author, true);
         service.updateBook(book);
+        System.out.println("\nLivro atualizado com sucesso!");
     }
 
     public void deleteBook() {
@@ -54,10 +55,9 @@ public class BookController {
         List<Book> books = service.getBooks();
         System.out.println("\nLivros encontrados: ");
         for (Book book : books) {
-            System.out.println("\nID: " + book.getId()
+            System.out.println("\n[ID: " + book.getId() + "] " + (book.isAvailable() ? "DISPONÍVEL" : "INDISPONÍVEL")
                     + "\nTítulo: " + book.getTitle()
                     + "\nAutor: " + book.getAuthor()
-                    + "\nDisponibilidade: " + (book.isAvailable() ? "Disponível" : "Indisponível")
             );
         }
     }
@@ -67,10 +67,31 @@ public class BookController {
         String query = scanner.nextLine();
         List<Book> books = service.searchBooks(query);
         for (Book book : books) {
-            System.out.println("\nID: " + book.getId()
+            System.out.println("\n[ID: " + book.getId() + "] " + (book.isAvailable() ? "DISPONÍVEL" : "INDISPONÍVEL")
                     + "\nTítulo: " + book.getTitle()
                     + "\nAutor: " + book.getAuthor()
-                    + "\nDisponibilidade: " + (book.isAvailable() ? "Disponível" : "Indisponível")
+            );
+        }
+    }
+
+    public void getAvailableBooks() {
+        List<Book> books = service.getAvailableBooks();
+        System.out.println("\nLivros Disponíveis:");
+        for (Book book : books) {
+            System.out.println("\n[ID: " + book.getId() + "] " + (book.isAvailable() ? "DISPONÍVEL" : "INDISPONÍVEL")
+                    + "\nTítulo: " + book.getTitle()
+                    + "\nAutor: " + book.getAuthor()
+            );
+        }
+    }
+
+    public void getUnavailableBooks() {
+        List<Book> books = service.getUnavailableBooks();
+        System.out.println("\nLivros Indisponíveis:");
+        for (Book book : books) {
+            System.out.println("\n[ID: " + book.getId() + "] " + (book.isAvailable() ? "DISPONÍVEL" : "INDISPONÍVEL")
+                    + "\nTítulo: " + book.getTitle()
+                    + "\nAutor: " + book.getAuthor()
             );
         }
     }

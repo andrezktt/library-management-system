@@ -103,4 +103,40 @@ public class BookDAO implements GenericDAO<Book> {
         }
         return books;
     }
+
+    public List<Book> getAvailable() throws SQLException {
+        String sql = "SELECT * FROM books WHERE available = TRUE";
+        List<Book> books = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                books.add(new Book(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("author"),
+                        rs.getBoolean("available")
+                ));
+            }
+        }
+        return books;
+    }
+
+    public List<Book> getUnavailable() throws SQLException {
+        String sql = "SELECT * FROM books WHERE available = FALSE";
+        List<Book> books = new ArrayList<>();
+        try (Connection conn = DatabaseConnection.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                books.add(new Book(
+                        rs.getInt("id"),
+                        rs.getString("title"),
+                        rs.getString("author"),
+                        rs.getBoolean("available")
+                ));
+            }
+        }
+        return books;
+    }
 }

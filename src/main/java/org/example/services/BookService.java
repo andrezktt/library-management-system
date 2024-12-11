@@ -15,16 +15,17 @@ public class BookService {
             bookDAO.add(book);
             System.out.println("Livro adicionado com sucesso!");
         } catch (SQLException e) {
-            System.err.println("Erro ao adicionar livro: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
-    public void updateBook(Book book) {
+    public boolean updateBook(Book book) {
         try {
             bookDAO.update(book);
         } catch (SQLException e) {
             System.err.println("Erro ao atualizar livro: " + e.getMessage());
         }
+        return false;
     }
 
     public void deleteBook(int id) {

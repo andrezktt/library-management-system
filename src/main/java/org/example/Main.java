@@ -20,10 +20,11 @@ public class Main {
             System.out.println("1. Listar Disponíveis");
             System.out.println("2. Registrar empréstimo");
             System.out.println("3. Realizar devolução");
+            System.out.println("4. Listar Indisponíveis");
             System.out.println("-----------------------");
-            System.out.println("4. Gerenciar livros");
-            System.out.println("5. Gerenciar usuários");
-            System.out.println("6. Gerenciar empréstimos");
+            System.out.println("5. Gerenciar livros");
+            System.out.println("6. Gerenciar usuários");
+            System.out.println("7. Gerenciar empréstimos");
             System.out.println("-----------------------");
             System.out.println("0. Sair");
             System.out.print("\nEscolha uma opção: ");
@@ -34,9 +35,10 @@ public class Main {
                 case 1 -> bookController.getAvailableBooks();
                 case 2 -> borrowController.borrowBook();
                 case 3 -> borrowController.returnBook();
-                case 4 -> bookMenu();
-                case 5 -> userMenu();
-                case 6 -> borrowMenu();
+                case 4 -> bookController.getUnavailableBooks();
+                case 5 -> bookMenu();
+                case 6 -> userMenu();
+                case 7 -> borrowMenu();
                 case 0 -> {
                     System.out.println("\nSaindo do sistema... Até logo!");
                     System.exit(0);
@@ -54,7 +56,6 @@ public class Main {
             System.out.println("3. Adicionar livro");
             System.out.println("4. Atualizar livro");
             System.out.println("5. Remover livro");
-            System.out.println("6. Listar indisponíveis");
             System.out.println("0. Voltar");
             System.out.print("\nEscolha uma opção: ");
             int option = scanner.nextInt();
@@ -66,7 +67,6 @@ public class Main {
                 case 3 -> bookController.addBook();
                 case 4 -> bookController.updateBook();
                 case 5 -> bookController.deleteBook();
-                case 6 -> bookController.getUnavailableBooks();
                 case 0 -> status = false;
                 default -> System.out.println("Opção inválida. Tente novamente.");
             }
@@ -104,9 +104,7 @@ public class Main {
         boolean status = true;
         while (status) {
             System.out.println("\n=== Gerenciamento de Empréstimos ===");
-            System.out.println("1. Listar empréstimos");
-            System.out.println("2. Listar empréstimos pendentes");
-            System.out.println("3. Listar empréstimos concluídos");
+            System.out.println("1. Relatório de empréstimos");
             System.out.println("4. Relatório de livros por usuário");
             System.out.println("5. Relatório de usuários por livro");
             System.out.println("6. Atualizar dados de empréstimo");
@@ -118,8 +116,6 @@ public class Main {
 
             switch (option) {
                 case 1 -> borrowController.getBorrows();
-//                case 2 -> borrowController.getPending();
-//                case 3 -> borrowController.getComplete();
                 case 4 -> borrowController.getBooksByUser();
                 case 5 -> borrowController.getUsersByBook();
                 case 6 -> borrowController.updateBorrowRecord();

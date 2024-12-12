@@ -188,7 +188,7 @@ public class BorrowDAO implements GenericDAO<Borrow> {
                 "JOIN users b ON a.user_id = b.id " +
                 "JOIN books c ON a.book_id = c.id " +
                 "WHERE book_id = ? " +
-                "ORDER BY user_name";
+                "ORDER BY borrow_id DESC";
         List<Borrow> borrows = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)){

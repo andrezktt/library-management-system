@@ -19,7 +19,7 @@ public class BorrowService {
         } catch (SQLException e) {
             throw new BorrowDatabaseException("Erro ao registrar empréstimo no banco de dados!", e);
         }
-        return false;
+        return true;
     }
 
     public void returnBook(int id, LocalDate returnDate) {
@@ -36,7 +36,7 @@ public class BorrowService {
         } catch (SQLException e) {
             throw new BorrowDatabaseException("Erro ao atualizar dados do empréstimo no banco de dados!", e);
         }
-        return false;
+        return true;
     }
 
     public boolean deleteBorrowRecord(int id) {
@@ -46,7 +46,7 @@ public class BorrowService {
         } catch (SQLException e) {
             throw new BorrowDatabaseException("Erro ao excluir registro de empréstimo no banco de dados!", e);
         }
-        return false;
+        return true;
     }
 
     public List<Borrow> getBorrows() {

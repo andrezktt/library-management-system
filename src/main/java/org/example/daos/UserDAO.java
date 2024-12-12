@@ -1,6 +1,7 @@
 package org.example.daos;
 
 import org.example.config.DatabaseConnection;
+import org.example.exceptions.UserNotFoundException;
 import org.example.models.Book;
 import org.example.models.User;
 
@@ -49,12 +50,16 @@ public class UserDAO implements GenericDAO<User> {
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setInt(1, id);
-            ResultSet rs = stmt.executeQuery(sql);
-            return new User(
-                    rs.getInt("id"),
-                    rs.getString("name"),
-                    rs.getString("email")
-            );
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return new User(
+                        rs.getInt("id"),
+                        rs.getString("name"),
+                        rs.getString("email")
+                );
+            } else {
+                throw new UserNotFoundException("Usuário não encontrado.");
+            }
         }
     }
 
@@ -92,5 +97,18 @@ public class UserDAO implements GenericDAO<User> {
             }
         }
         return users;
+    }
+
+    public boolean emailExists(String email) throws SQLException {
+        String sql = "SELECT COUNT(*) FROM users WHERE email = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+            PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1) > 0;
+            }
+        }
+        return false;
     }
 }

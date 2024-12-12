@@ -71,26 +71,22 @@ public class BorrowController {
             throw new UserNotFoundException("Usuário não encontrado.");
         }
 
-        LocalDate borrowDate = null;
-        while (borrowDate == null) {
-            System.out.print("Digite a data de empréstimo (dd/MM/yyyy): ");
-            try {
-                String borrowDateString = scanner.nextLine();
-                borrowDate = borrowDateString.isEmpty() ? LocalDate.now() : LocalDate.parse(borrowDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            } catch (DateTimeParseException e) {
-                throw new InvalidDateException("Data inválida. Tente novamente.");
-            }
+        LocalDate borrowDate;
+        System.out.print("Digite a data de empréstimo (dd/MM/yyyy): ");
+        try {
+            String borrowDateString = scanner.nextLine();
+            borrowDate = borrowDateString.isEmpty() ? LocalDate.now() : LocalDate.parse(borrowDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateException("Data inválida. Tente novamente.");
         }
 
-        LocalDate returnDate = null;
-        while (returnDate == null) {
-            System.out.print("Digite a data de retorno (dd/MM/yyyy): ");
-            try {
-                String returnDateString = scanner.nextLine();
-                returnDate = returnDateString.isEmpty() ? borrowDate.plusMonths(1) : LocalDate.parse(returnDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            } catch (DateTimeParseException e) {
-                throw new InvalidDateException("Data inválida. Tente novamente.");
-            }
+        LocalDate returnDate;
+        System.out.print("Digite a data de retorno (dd/MM/yyyy): ");
+        try {
+            String returnDateString = scanner.nextLine();
+            returnDate  = returnDateString.isEmpty() ? borrowDate.plusMonths(1) : LocalDate.parse(returnDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateException("Data inválida. Tente novamente.");
         }
 
         Borrow borrow = new Borrow(0, bookId, userId, borrowDate, returnDate);
@@ -103,7 +99,7 @@ public class BorrowController {
 
         selectedBook.setAvailable(false);
         bookService.updateBook(selectedBook);
-        System.out.println("Empréstimo realizado com sucesso!");
+        System.out.println("\nEmpréstimo realizado com sucesso!");
     }
 
     public void returnBook() {
@@ -136,18 +132,16 @@ public class BorrowController {
             return;
         }
 
-        LocalDate returnDate = null;
-        while (returnDate == null) {
-            System.out.print("Digite a data de retorno (dd/MM/yyyy): ");
-            try {
-                String returnDateString = scanner.nextLine();
-                returnDate = returnDateString.isEmpty() ? LocalDate.now() : LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-                if (returnDate.isAfter(LocalDate.now())) {
-                    throw new InvalidDateException("A data de retorno não pode ser no futuro. Tente novamente.");
-                }
-            } catch (DateTimeParseException e) {
-                throw new InvalidDateException("Data inválida. Tente novamente.");
+        LocalDate returnDate;
+        System.out.print("Digite a data de retorno (dd/MM/yyyy): ");
+        try {
+            String returnDateString = scanner.nextLine();
+            returnDate = returnDateString.isEmpty() ? LocalDate.now() : LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            if (returnDate.isAfter(LocalDate.now())) {
+                throw new InvalidDateException("A data de retorno não pode ser no futuro. Tente novamente.");
             }
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateException("Data inválida. Tente novamente.");
         }
 
         borrowService.returnBook(bookId, returnDate);
@@ -178,7 +172,7 @@ public class BorrowController {
         }
 
         if (!selectedBook.isAvailable()) {
-            System.out.println("\nO livro ão esá disponível para empréstimo.");
+            System.out.println("\nO livro não esá disponível para empréstimo.");
             return;
         }
 
@@ -193,15 +187,13 @@ public class BorrowController {
             }
         }
 
-        LocalDate returnDate = null;
-        while (returnDate == null) {
-            System.out.print("Digite a nova data de retorno (dd/MM/yyyy): ");
-            try {
-                String returnDateString = scanner.nextLine();
-                returnDate = returnDateString.isEmpty() ? borrowDate.plusMonths(1) : LocalDate.parse(returnDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
-            } catch (DateTimeParseException e) {
-                throw new InvalidDateException("Data inválida. Tente novamente.");
-            }
+        LocalDate returnDate;
+        System.out.print("Digite a nova data de retorno (dd/MM/yyyy): ");
+        try {
+            String returnDateString = scanner.nextLine();
+            returnDate = returnDateString.isEmpty() ? borrowDate.plusMonths(1) : LocalDate.parse(returnDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+        } catch (DateTimeParseException e) {
+            throw new InvalidDateException("Data inválida. Tente novamente.");
         }
 
         Borrow borrow = new Borrow(0, bookId, userId, borrowDate, returnDate);
@@ -275,6 +267,15 @@ public class BorrowController {
     }
 
     public void getBooksByUser() {
+        List<User> users = userService.getUsers();
+        System.out.println("\nUsuários cadastrados:");
+        for (User user : users) {
+            System.out.println("\nID: " + user.getId()
+                    + "\nNome: " + user.getName()
+                    + "\nEmail: " + user.getEmail()
+            );
+        }
+
         System.out.print("\nDigite o ID do usuário: ");
         int userId = scanner.nextInt();
         scanner.nextLine();
@@ -291,12 +292,16 @@ public class BorrowController {
             return;
         }
 
+        System.out.println("\n[USER_ID: " + user.getId() + "]"
+                + "\nNome: " + user.getName()
+                + "\nEmail: " + user.getEmail()
+                + "\n\n--------------------------------------------------"
+        );
         for (Borrow borrow : borrows) {
             Book book = borrow.getBook();
             if (book == null) {
                 throw new BookNotFoundException("Livro não encontrado.");
             }
-
             System.out.println(
                             "\nEMPRÉSTIMO [#" + borrow.getId() + "]" +
                             "\nTítulo: " + book.getTitle() + " [ID: " + book.getId() + "] " +
@@ -307,6 +312,15 @@ public class BorrowController {
     }
 
     public void getUsersByBook() {
+        List<Book> books = bookService.getBooks();
+        System.out.println("\nLivros Disponíveis:");
+        for (Book book : books) {
+            System.out.println("\n[BOOK_ID: " + book.getId() + "]"
+                    + "\nTítulo: " + book.getTitle()
+                    + "\nAutor: " + book.getAuthor()
+            );
+        }
+
         System.out.print("\nDigite o ID do livro: ");
         int bookId = scanner.nextInt();
         scanner.nextLine();
@@ -323,14 +337,18 @@ public class BorrowController {
             return;
         }
 
+        System.out.println("\n[BOOK_ID: " + book.getId() + "]"
+                + "\nTítulo: " + book.getTitle()
+                + "\nAutor: " + book.getAuthor()
+                + "\n\n--------------------------------------------------"
+        );
+
         for (Borrow borrow : borrows) {
             User user = borrow.getUser();
             if (user == null) {
                 throw new UserNotFoundException("Usuário não encontrado.");
             }
-
-            System.out.println(
-                    "\nEMPRÉSTIMO [#" + borrow.getId() + "]" +
+            System.out.println("\nEMPRÉSTIMO [#" + borrow.getId() + "]" +
                             "\n" + "Nome: " + user.getName() + " [ID: " + user.getId() + "] " +
                             "\nEmail: " + user.getEmail() +
                             "\nDe: " + borrow.getBorrowDate() + "  --->  Até: " + borrow.getReturnDate()

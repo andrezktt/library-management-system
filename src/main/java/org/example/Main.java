@@ -105,10 +105,10 @@ public class Main {
         while (status) {
             System.out.println("\n=== Gerenciamento de Empréstimos ===");
             System.out.println("1. Relatório de empréstimos");
-            System.out.println("4. Relatório de livros por usuário");
-            System.out.println("5. Relatório de usuários por livro");
-            System.out.println("6. Atualizar dados de empréstimo");
-            System.out.println("7. Remover registro de empréstimo");
+            System.out.println("2. Relatório de livros por usuário");
+            System.out.println("3. Relatório de usuários por livro");
+            System.out.println("4. Atualizar dados de empréstimo");
+            System.out.println("5. Remover registro de empréstimo");
             System.out.println("0. Voltar");
             System.out.print("Escolha uma opção: ");
             int option = scanner.nextInt();
@@ -116,10 +116,10 @@ public class Main {
 
             switch (option) {
                 case 1 -> borrowController.getBorrows();
-                case 4 -> borrowController.getBooksByUser();
-                case 5 -> borrowController.getUsersByBook();
-                case 6 -> borrowController.updateBorrowRecord();
-                case 7 -> borrowController.deleteBorrowRecord();
+                case 2 -> borrowController.getBooksByUser();
+                case 3 -> borrowController.getUsersByBook();
+                case 4 -> borrowController.updateBorrowRecord();
+                case 5 -> borrowController.deleteBorrowRecord();
                 case 0 -> status = false;
                 default -> System.out.println("Opção inválida. Tente novamente.");
             }

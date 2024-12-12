@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.daos.UserDAO;
+import org.example.exceptions.DatabaseOperationException;
 import org.example.models.User;
 
 import java.sql.*;
@@ -15,7 +16,7 @@ public class UserService {
             userDAO.add(user);
             System.out.println("Usuário adicionado com sucesso!");
         } catch (SQLException e) {
-            System.err.println("Erro ao adicionar usuário: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao adicionar usuário: " + e.getMessage());
         }
     }
 
@@ -24,7 +25,7 @@ public class UserService {
             userDAO.update(user);
             System.out.println("Usuário atualizado com sucesso!");
         } catch (SQLException e) {
-            System.err.println("Erro ao atualizar usuário: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao atualizar usuário: " + e.getMessage());
         }
     }
 
@@ -33,7 +34,7 @@ public class UserService {
             userDAO.delete(id);
             System.out.println("Usuário excluído com sucesso!");
         } catch (SQLException e) {
-            System.err.println("Erro ao deletar usuário: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao deletar usuário: " + e.getMessage());
         }
     }
 
@@ -41,9 +42,8 @@ public class UserService {
         try {
             return userDAO.findById(id);
         } catch (SQLException e) {
-            System.err.println("\nErro ao buscar usuário: " + e.getMessage());
+            throw new DatabaseOperationException("\nErro ao buscar usuário: " + e.getMessage());
         }
-        return null;
     }
 
     public List<User> getUsers() {
@@ -54,9 +54,8 @@ public class UserService {
             }
             return users;
         } catch (SQLException e) {
-            System.err.println("Erro ao listar usuários: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao listar usuários: " + e.getMessage());
         }
-        return null;
     }
 
     public List<User> searchUser(String name) {
@@ -68,7 +67,7 @@ public class UserService {
                 return users;
             }
         } catch (SQLException e) {
-            System.err.println("Erro ao buscar usuário: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao buscar usuário: " + e.getMessage());
         }
         return null;
     }
@@ -77,8 +76,7 @@ public class UserService {
         try {
             return userDAO.emailExists(email);
         } catch (SQLException e) {
-            System.out.println("Erro: O email já está em uso.");;
+            throw new DatabaseOperationException("Erro: O email já está em uso.");
         }
-        return false;
     }
 }

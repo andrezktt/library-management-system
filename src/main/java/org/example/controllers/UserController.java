@@ -1,5 +1,8 @@
 package org.example.controllers;
 
+import org.example.exceptions.EmailAlreadyExistsException;
+import org.example.exceptions.InvalidInputException;
+import org.example.exceptions.UserNotFoundException;
 import org.example.models.User;
 import org.example.services.UserService;
 
@@ -16,26 +19,20 @@ public class UserController {
         String name = scanner.nextLine();
 
         if (name.isEmpty()) {
-            System.out.println("Erro: O nome do usuário não pode estar vazio.");
-            return;
+            throw new InvalidInputException("O nome do usuário não pode estar vazio.");
         }
 
         System.out.print("Digite o email do usuário: ");
         String email = scanner.nextLine();
 
         if (email.isEmpty()) {
-            System.out.println("Erro: O email não pode estar vazio.");
-            return;
+            throw new InvalidInputException("O email não pode estar vazio.");
         }
-
         if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-            System.out.println("Erro: O email informado não é válido.");
-            return;
+            throw new InvalidInputException("O email informado não é válido.");
         }
-
         if (service.emailExists(email)) {
-            System.out.println("Erro: O email informado já está em uso.");
-            return;
+            throw new EmailAlreadyExistsException("O email informado já está em uso.");
         }
 
         User user = new User(0, name, email);
@@ -44,45 +41,30 @@ public class UserController {
 
     public void updateUser() {
         System.out.print("\nID do usuário que deseja alterar: ");
-        int userId;
+        int userId = readPositiveInteger("ID do usuário");
 
-        try {
-            userId = Integer.parseInt(scanner.nextLine().trim());
-        } catch (NumberFormatException e) {
-            System.out.println("Erro: O ID do usuário deve ser um número válido.");
-            return;
-        }
-        if (userId <= 0) {
-            System.out.println("Erro: O ID do usuário deve ser maior que zero.");
-            return;
-        }
         if (service.findUserById(userId) == null) {
-            System.out.println("Erro: Não existe um usuário com o ID informado.");
-            return;
+            throw new UserNotFoundException("Não existe um usuário com o ID informado.");
         }
 
         System.out.print("Digite o novo nome do usuário: ");
         String name = scanner.nextLine();
 
         if (name.isEmpty()) {
-            System.out.println("Erro: O nome do usuário não pode estar vazio.");
-            return;
+            throw new InvalidInputException("O nome do usuário não pode estar vazio.");
         }
 
         System.out.print("Digite o novo email do usuário: ");
         String email = scanner.nextLine().trim();
 
         if (email.isEmpty()) {
-            System.out.println("Erro: O email do usuário não pode estar vazio.");
-            return;
+            throw new InvalidInputException("O email do usuário não pode estar vazio.");
         }
         if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
-            System.out.println("Erro: O email informado não é válido.");
-            return;
+            throw new InvalidInputException("O email informado não é válido.");
         }
         if (service.emailExists(email)) {
-            System.out.println("Erro: O email informado já está em uso por outro usuário.");
-            return;
+            throw new EmailAlreadyExistsException("O email informado já está em uso por outro usuário.");
         }
 
         User user = new User(userId, name, email);
@@ -91,23 +73,10 @@ public class UserController {
 
     public void deleteUser() {
         System.out.print("\nDigite o ID do usuário que deseja excluir: ");
-        if (!scanner.hasNextInt()) {
-            System.out.println("Erro: O ID deve ser um número inteiro.");
-            scanner.nextLine();
-            return;
-        }
-
-        int userId = scanner.nextInt();
-        scanner.nextLine();
-
-        if (userId <= 0) {
-            System.out.println("Erro: O ID deve ser um número positivo.");
-            return;
-        }
+        int userId = readPositiveInteger("ID do usuário");
 
         if (service.findUserById(userId) == null) {
-            System.out.println("Erro: Nenhum usuário encontrado com o ID fornecido.");
-            return;
+            throw new UserNotFoundException("Nenhum usuário encontrado com o ID fornecido.");
         }
 
         service.deleteUser(userId);
@@ -115,19 +84,11 @@ public class UserController {
 
     public void findUserById() {
         System.out.print("\nDigite o ID do usuário que buscar: ");
-        if (!scanner.hasNextInt()) {
-            System.out.println("Erro: O ID deve ser um número inteiro.");
-            scanner.nextLine();
-            return;
-        }
-
-        int userId = scanner.nextInt();
-        scanner.nextLine();
+        int userId = readPositiveInteger("ID do usuário");
 
         User user = service.findUserById(userId);
         if (user == null) {
-            System.out.println("Erro: nenhum usuário encontrado com o ID informado.");
-            return;
+            throw new UserNotFoundException("Nenhum usuário encontrado com o ID informado.");
         }
 
         System.out.println("\nID: " + user.getId()
@@ -140,8 +101,7 @@ public class UserController {
         List<User> users = service.getUsers();
 
         if (users == null || users.isEmpty()) {
-            System.out.println("\nNenhum usuário encontrado.");
-            return;
+            throw new UserNotFoundException("Nenhum usuário encontrado.");
         }
 
         System.out.println("\nUsuários encontrados: ");
@@ -158,15 +118,13 @@ public class UserController {
         String name = scanner.nextLine();
 
         if (name == null || name.trim().isEmpty()) {
-            System.out.println("\nO nome não pode estar vazio. Tente novamente.");
-            return;
+            throw new InvalidInputException("O nome não pode estar vazio. Tente novamente.");
         }
 
         List<User> users = service.searchUser(name);
 
         if (users == null || users.isEmpty()) {
-            System.out.println("\nNenhum usuário encontrado com o nome fornecido.");
-            return;
+            throw new UserNotFoundException("Nenhum usuário encontrado com o nome fornecido.");
         }
 
         System.out.println("\nUsuários encontrados:");
@@ -175,6 +133,18 @@ public class UserController {
                     + "\nNome: " + user.getName()
                     + "\nEmail: " + user.getEmail()
             );
+        }
+    }
+
+    private int readPositiveInteger(String fieldName) {
+        try {
+            int value = Integer.parseInt(scanner.nextLine());
+            if (value <= 0) {
+                throw new InvalidInputException(fieldName + " deve ser um número positivo.");
+            }
+            return value;
+        } catch (NumberFormatException e) {
+            throw new InvalidInputException(fieldName + " deve ser um número inteiro.");
         }
     }
 }

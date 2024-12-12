@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.daos.BookDAO;
+import org.example.exceptions.DatabaseOperationException;
 import org.example.models.Book;
 
 import java.sql.*;
@@ -15,7 +16,7 @@ public class BookService {
             bookDAO.add(book);
             System.out.println("Livro adicionado com sucesso!");
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new DatabaseOperationException("Erro ao adicionar livro: " + e.getMessage());
         }
     }
 
@@ -23,7 +24,7 @@ public class BookService {
         try {
             bookDAO.update(book);
         } catch (SQLException e) {
-            System.err.println("Erro ao atualizar livro: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao atualizar livro: " + e.getMessage());
         }
         return false;
     }
@@ -31,9 +32,8 @@ public class BookService {
     public void deleteBook(int id) {
         try {
             bookDAO.delete(id);
-            System.out.println("Livro excluído com sucesso!");
         } catch (SQLException e) {
-            System.err.println("Erro ao deletar livro: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao deletar livro: " + e.getMessage());
         }
     }
 
@@ -41,61 +41,39 @@ public class BookService {
         try {
             return bookDAO.findById(id);
         } catch (SQLException e) {
-            System.err.println("Erro ao buscar livro: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao buscar livro: " + e.getMessage());
         }
-        return null;
     }
 
     public List<Book> getBooks() {
         try {
-            List<Book> books = bookDAO.getAll();
-            if (books.isEmpty()) {
-                System.out.println("Nenhum livro encontrado!");
-            }
-            return books;
+            return bookDAO.getAll();
         } catch (SQLException e) {
-            System.err.println("Erro ao listar livros: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao listar livros: " + e.getMessage());
         }
-        return null;
     }
 
     public List<Book> searchBooks(String query) {
         try {
-            List<Book> books = bookDAO.searchBooks(query);
-            if (books.isEmpty()) {
-                System.out.println("Nenhum livro encontrado!");
-            } else {
-                return books;
-            }
+            return bookDAO.searchBooks(query);
         } catch (SQLException e) {
-            System.err.println("Erro ao buscar livro: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao buscar livro: " + e.getMessage());
         }
-        return null;
     }
 
     public List<Book> getAvailableBooks() {
         try {
-            List<Book> books = bookDAO.getAvailable();
-            if (books.isEmpty()) {
-                System.out.println("Nenhum livro encontrado!");
-            }
-            return books;
+            return bookDAO.getAvailable();
         } catch (SQLException e) {
-            System.err.println("Erro ao listar livros disponíveis: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao listar livros disponíveis: " + e.getMessage());
         }
-        return null;
     }
 
     public List<Book> getUnavailableBooks() {
         try {
-            List<Book> books = bookDAO.getUnavailable();
-            if (books.isEmpty()) {
-                System.out.println("Nenhum livro encontrado!");
-            }
-            return books;
+            return bookDAO.getUnavailable();
         } catch (SQLException e) {
-            System.err.println("Erro ao listar livros indisponíveis: " + e.getMessage());
+            throw new DatabaseOperationException("Erro ao listar livros indisponíveis: " + e.getMessage());
         }
-        return null;
     }
 }

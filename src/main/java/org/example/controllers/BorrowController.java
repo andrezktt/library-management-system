@@ -136,7 +136,7 @@ public class BorrowController {
         System.out.print("Digite a data de retorno (dd/MM/yyyy): ");
         try {
             String returnDateString = scanner.nextLine();
-            returnDate = returnDateString.isEmpty() ? LocalDate.now() : LocalDate.parse(scanner.nextLine(), DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+            returnDate = returnDateString.isEmpty() ? LocalDate.now() : LocalDate.parse(returnDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             if (returnDate.isAfter(LocalDate.now())) {
                 throw new InvalidDateException("A data de retorno não pode ser no futuro. Tente novamente.");
             }
@@ -144,6 +144,7 @@ public class BorrowController {
             throw new InvalidDateException("Data inválida. Tente novamente.");
         }
 
+        System.out.println("Data de retorno: " + returnDate);
         borrowService.returnBook(bookId, returnDate);
 
         selectedBook.setAvailable(true);
@@ -258,8 +259,8 @@ public class BorrowController {
             } else {
                 System.out.println(
                         "\nEMPRÉSTIMO [#" + borrow.getId() + "]" +
-                                "\n" + "Livro: " + "[#" + book.getId() + "] " + book.getTitle() + " (" + book.getAuthor() + ")" +
-                                "\n" + "Usuário: " + "[#" + user.getId() + "] " + user.getName() + " (" + user.getEmail() + ")" +
+                                "\n" + "Livro: " + "[BOOK_ID: " + book.getId() + "] " + book.getTitle() + " (" + book.getAuthor() + ")" +
+                                "\n" + "Usuário: " + "[USER_ID: " + user.getId() + "] " + user.getName() + " (" + user.getEmail() + ")" +
                                 "\nDe: " + borrow.getBorrowDate() + "  --->  Até: " + borrow.getReturnDate()
                 );
             }

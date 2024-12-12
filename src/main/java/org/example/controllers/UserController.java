@@ -63,9 +63,6 @@ public class UserController {
         if (!email.matches("^[\\w.-]+@[\\w.-]+\\.[a-zA-Z]{2,}$")) {
             throw new InvalidInputException("O email informado não é válido.");
         }
-        if (service.emailExists(email)) {
-            throw new EmailAlreadyExistsException("O email informado já está em uso por outro usuário.");
-        }
 
         User user = new User(userId, name, email);
         service.updateUser(user);

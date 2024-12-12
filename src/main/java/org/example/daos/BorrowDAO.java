@@ -44,6 +44,7 @@ public class BorrowDAO implements GenericDAO<Borrow> {
              PreparedStatement stmt = conn.prepareStatement(sql)) {
             stmt.setDate(1, Date.valueOf(returnDate));
             stmt.setInt(2, id);
+            System.out.println("Executando SQL: " + sql + " com return_date = " + returnDate + " e id = " + id);
             stmt.executeUpdate();
         }
     }
@@ -91,7 +92,7 @@ public class BorrowDAO implements GenericDAO<Borrow> {
                 "FROM borrows a " +
                 "JOIN users b ON a.user_id = b.id " +
                 "JOIN books c ON a.book_id = c.id " +
-                "ORDER BY borrow_id DESC";
+                "ORDER BY borrow_id ASC";
         List<Borrow> borrows = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
             PreparedStatement stmt = conn.prepareStatement(sql);
@@ -139,7 +140,7 @@ public class BorrowDAO implements GenericDAO<Borrow> {
                 "JOIN users b ON a.user_id = b.id " +
                 "JOIN books c ON a.book_id = c.id " +
                 "WHERE user_id = ? " +
-                "ORDER BY borrow_id DESC";
+                "ORDER BY borrow_id ASC";
         List<Borrow> borrows = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)){
@@ -188,7 +189,7 @@ public class BorrowDAO implements GenericDAO<Borrow> {
                 "JOIN users b ON a.user_id = b.id " +
                 "JOIN books c ON a.book_id = c.id " +
                 "WHERE book_id = ? " +
-                "ORDER BY borrow_id DESC";
+                "ORDER BY borrow_id ASC";
         List<Borrow> borrows = new ArrayList<>();
         try (Connection conn = DatabaseConnection.getConnection();
              PreparedStatement stmt = conn.prepareStatement(sql)){

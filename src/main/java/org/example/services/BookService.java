@@ -14,7 +14,6 @@ public class BookService {
     public void addBook(Book book) {
         try {
             bookDAO.add(book);
-            System.out.println("Livro adicionado com sucesso!");
         } catch (SQLException e) {
             throw new DatabaseOperationException("Erro ao adicionar livro: " + e.getMessage());
         }

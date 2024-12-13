@@ -1,8 +1,6 @@
 package org.example.daos;
 
 import org.example.config.DatabaseConnection;
-import org.example.exceptions.UserNotFoundException;
-import org.example.models.Book;
 import org.example.models.User;
 
 import java.sql.*;
@@ -57,10 +55,9 @@ public class UserDAO implements GenericDAO<User> {
                         rs.getString("name"),
                         rs.getString("email")
                 );
-            } else {
-                throw new UserNotFoundException("Usuário não encontrado.");
             }
         }
+        return null;
     }
 
     @Override

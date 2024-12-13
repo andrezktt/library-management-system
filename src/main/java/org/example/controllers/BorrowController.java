@@ -1,9 +1,5 @@
 package org.example.controllers;
 
-import org.example.exceptions.BookNotFoundException;
-import org.example.exceptions.BorrowNotFoundException;
-import org.example.exceptions.InvalidDateException;
-import org.example.exceptions.UserNotFoundException;
 import org.example.models.Book;
 import org.example.models.Borrow;
 import org.example.models.User;
@@ -39,13 +35,15 @@ public class BorrowController {
                     + "\nAutor: " + book.getAuthor()
             );
         }
+
         System.out.print("\nDigite o ID do livro que deseja emprestar: ");
         int bookId = scanner.nextInt();
         scanner.nextLine();
 
         Book selectedBook = bookService.findBookById(bookId);
         if (selectedBook == null || !selectedBook.isAvailable()) {
-            throw new BookNotFoundException("Livro não encontrado ou não está disponível para empréstimo!");
+            System.out.println("\nErro: Livro não encontrado ou não está disponível para empréstimo!");
+            return;
         }
 
         List<User> users = userService.getUsers();
@@ -62,13 +60,15 @@ public class BorrowController {
                     + "\nEmail: " + user.getEmail()
             );
         }
+
         System.out.print("\nDigite o ID do usuário que vai emprestá-lo: ");
         int userId = scanner.nextInt();
         scanner.nextLine();
 
         User selectedUser = userService.findUserById(userId);
         if (selectedUser == null) {
-            throw new UserNotFoundException("Usuário não encontrado.");
+            System.out.println("\nErro: Usuário não encontrado.");
+            return;
         }
 
         LocalDate borrowDate;
@@ -77,7 +77,8 @@ public class BorrowController {
             String borrowDateString = scanner.nextLine();
             borrowDate = borrowDateString.isEmpty() ? LocalDate.now() : LocalDate.parse(borrowDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         } catch (DateTimeParseException e) {
-            throw new InvalidDateException("Data inválida. Tente novamente.");
+            System.out.println("\nErro: Data inválida. Tente novamente.");
+            return;
         }
 
         LocalDate returnDate;
@@ -86,14 +87,15 @@ public class BorrowController {
             String returnDateString = scanner.nextLine();
             returnDate  = returnDateString.isEmpty() ? borrowDate.plusMonths(1) : LocalDate.parse(returnDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         } catch (DateTimeParseException e) {
-            throw new InvalidDateException("Data inválida. Tente novamente.");
+            System.out.println("\nErro: Data inválida. Tente novamente.");
+            return;
         }
 
         Borrow borrow = new Borrow(0, bookId, userId, borrowDate, returnDate);
 
         boolean success = borrowService.borrowBook(borrow);
         if (!success) {
-            System.out.println("\nErro ao realizar empréstimo.");
+            System.out.println("\nErro: impossível realizar o empréstimo.");
             return;
         }
 
@@ -124,7 +126,8 @@ public class BorrowController {
 
         Book selectedBook = bookService.findBookById(bookId);
         if (selectedBook == null) {
-            throw new BookNotFoundException("Livro não encontrado.");
+            System.out.println("\nErro: Livro não encontrado.");
+            return;
         }
 
         if (selectedBook.isAvailable()) {
@@ -138,10 +141,12 @@ public class BorrowController {
             String returnDateString = scanner.nextLine();
             returnDate = returnDateString.isEmpty() ? LocalDate.now() : LocalDate.parse(returnDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             if (returnDate.isAfter(LocalDate.now())) {
-                throw new InvalidDateException("A data de retorno não pode ser no futuro. Tente novamente.");
+                System.out.println("\nErro: A data de retorno não pode ser no futuro. Tente novamente.");
+                return;
             }
         } catch (DateTimeParseException e) {
-            throw new InvalidDateException("Data inválida. Tente novamente.");
+            System.out.println("\nErro: Data inválida. Tente novamente.");
+            return;
         }
 
         System.out.println("Data de retorno: " + returnDate);
@@ -154,13 +159,14 @@ public class BorrowController {
     }
 
     public void updateBorrowRecord() {
-        System.out.print("Digite o ID do livro: ");
+        System.out.print("\nDigite o ID do livro: ");
         int bookId = scanner.nextInt();
         scanner.nextLine();
 
         Book selectedBook = bookService.findBookById(bookId);
         if (selectedBook == null) {
-            throw new BookNotFoundException("Livro não encontrado.");
+            System.out.println("\nErro: Livro não encontrado.");
+            return;
         }
 
         System.out.print("Digite o ID do usuário: ");
@@ -169,7 +175,8 @@ public class BorrowController {
 
         User selectedUser = userService.findUserById(userId);
         if (selectedUser == null) {
-            throw new UserNotFoundException("Usuário não encontrado.");
+            System.out.println("\nErro: Usuário não encontrado.");
+            return;
         }
 
         if (!selectedBook.isAvailable()) {
@@ -184,7 +191,8 @@ public class BorrowController {
                 String borrowDateString = scanner.nextLine();
                 borrowDate = borrowDateString.isEmpty() ? LocalDate.now() : LocalDate.parse(borrowDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
             } catch (DateTimeParseException e) {
-                throw new InvalidDateException("Data inválida. Tente novamente.");
+                System.out.println("\nErro: Data inválida. Tente novamente.");
+                return;
             }
         }
 
@@ -194,14 +202,15 @@ public class BorrowController {
             String returnDateString = scanner.nextLine();
             returnDate = returnDateString.isEmpty() ? borrowDate.plusMonths(1) : LocalDate.parse(returnDateString, DateTimeFormatter.ofPattern("dd/MM/yyyy"));
         } catch (DateTimeParseException e) {
-            throw new InvalidDateException("Data inválida. Tente novamente.");
+            System.out.println("\nErro: Data inválida. Tente novamente.");
+            return;
         }
 
         Borrow borrow = new Borrow(0, bookId, userId, borrowDate, returnDate);
 
         boolean success = borrowService.updateBorrowRecord(borrow);
         if (!success) {
-            System.out.println("\nErro a atualizar o registro de empréstimo.");
+            System.out.println("\nErro: não foi possível atualizar o registro de empréstimo.");
             return;
         }
 
@@ -215,24 +224,26 @@ public class BorrowController {
 
         Borrow borrow = borrowService.findById(borrowId);
         if (borrow == null) {
-            throw new BorrowNotFoundException("Registro de empréstimo não encontrado.");
+            System.out.println("\nErro: Registro de empréstimo não encontrado.");
+            return;
         }
 
         Book book = bookService.findBookById(borrow.getBookId());
         if (book == null) {
-            throw new BookNotFoundException("Livro não encontrado.");
+            System.out.println("\nErro: Livro não encontrado.");
+            return;
         }
 
         boolean success = borrowService.deleteBorrowRecord(borrowId);
         if (!success) {
-            System.out.println("\nErro ao excluir o registro de empréstimo.");
+            System.out.println("\nErro: não foi possível excluir o registro de empréstimo.");
             return;
         }
 
         book.setAvailable(true);
         boolean bookUpdated = bookService.updateBook(book);
         if (!bookUpdated) {
-            System.out.println("\nErro ao atualizar a disponibilidade do livro.");
+            System.out.println("\nErro: não foi possível atualizar a disponibilidade do livro.");
             return;
         }
 
@@ -243,7 +254,7 @@ public class BorrowController {
         List<Borrow> borrows = borrowService.getBorrows();
 
         if (borrows.isEmpty()) {
-            System.out.println("\nNenhum empréstimo encontrado.");
+            System.out.println("\nErro: Nenhum empréstimo encontrado.");
             return;
         }
 
@@ -253,9 +264,11 @@ public class BorrowController {
             Book book = borrow.getBook();
 
             if (user == null) {
-                throw new UserNotFoundException("Usuário não encontrado.");
+                System.out.println("\nErro: Usuário não encontrado.");
+                return;
             } else if (book == null) {
-                throw new BookNotFoundException("Livro não encontrado.");
+                System.out.println("\nErro: Livro não encontrado.");
+                return;
             } else {
                 System.out.println(
                         "\nEMPRÉSTIMO [#" + borrow.getId() + "]" +
@@ -283,13 +296,14 @@ public class BorrowController {
 
         User user = userService.findUserById(userId);
         if (user == null) {
-            throw new UserNotFoundException("Usuário não encontrado.");
+            System.out.println("\nErro: Usuário não encontrado.");
+            return;
         }
 
         List<Borrow> borrows = borrowService.getBooksByUser(userId);
 
         if (borrows.isEmpty()) {
-            System.out.println("\nEste usuário não tem livros emprestados.");
+            System.out.println("\nEste usuário ainda não emprestou nenhum livro.");
             return;
         }
 
@@ -298,10 +312,12 @@ public class BorrowController {
                 + "\nEmail: " + user.getEmail()
                 + "\n\n--------------------------------------------------"
         );
+
         for (Borrow borrow : borrows) {
             Book book = borrow.getBook();
             if (book == null) {
-                throw new BookNotFoundException("Livro não encontrado.");
+                System.out.println("\nErro: Livro não encontrado.");
+                return;
             }
             System.out.println(
                             "\nEMPRÉSTIMO [#" + borrow.getId() + "]" +
@@ -328,7 +344,8 @@ public class BorrowController {
 
         Book book = bookService.findBookById(bookId);
         if (book == null) {
-            throw new BookNotFoundException("Livro não encontrado.");
+            System.out.println("\nErro: Livro não encontrado.");
+            return;
         }
 
         List<Borrow> borrows = borrowService.getUsersByBook(bookId);
@@ -347,7 +364,8 @@ public class BorrowController {
         for (Borrow borrow : borrows) {
             User user = borrow.getUser();
             if (user == null) {
-                throw new UserNotFoundException("Usuário não encontrado.");
+                System.out.println("\nErro: Usuário não encontrado.");
+                return;
             }
             System.out.println("\nEMPRÉSTIMO [#" + borrow.getId() + "]" +
                             "\n" + "Nome: " + user.getName() + " [ID: " + user.getId() + "] " +

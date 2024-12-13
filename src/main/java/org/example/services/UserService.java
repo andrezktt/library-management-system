@@ -14,7 +14,6 @@ public class UserService {
     public void addUser(User user) {
         try {
             userDAO.add(user);
-            System.out.println("Usuário adicionado com sucesso!");
         } catch (SQLException e) {
             throw new DatabaseOperationException("Erro ao adicionar usuário: " + e.getMessage());
         }

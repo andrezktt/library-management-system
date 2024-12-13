@@ -18,9 +18,9 @@ public class Main {
         while (true) {
             System.out.println("\n=== Sistema de Gerenciamento de Biblioteca ===");
             System.out.println("1. Listar Disponíveis");
-            System.out.println("2. Registrar empréstimo");
-            System.out.println("3. Realizar devolução");
-            System.out.println("4. Listar Indisponíveis");
+            System.out.println("2. Listar Indisponíveis");
+            System.out.println("3. Registrar empréstimo");
+            System.out.println("4. Realizar devolução");
             System.out.println("-----------------------");
             System.out.println("5. Gerenciar livros");
             System.out.println("6. Gerenciar usuários");
@@ -33,9 +33,9 @@ public class Main {
 
             switch (option) {
                 case 1 -> bookController.getAvailableBooks();
-                case 2 -> borrowController.borrowBook();
-                case 3 -> borrowController.returnBook();
-                case 4 -> bookController.getUnavailableBooks();
+                case 2 -> bookController.getUnavailableBooks();
+                case 3 -> borrowController.borrowBook();
+                case 4 -> borrowController.returnBook();
                 case 5 -> bookMenu();
                 case 6 -> userMenu();
                 case 7 -> borrowMenu();
@@ -78,13 +78,13 @@ public class Main {
         boolean status = true;
         while (status) {
             System.out.println("\n=== Gerenciamento de Usuários ===");
-            System.out.println("1. Listar usuários.");
+            System.out.println("\n1. Listar usuários.");
             System.out.println("2. Buscar usuário por nome ou email.");
             System.out.println("3. Cadastrar usuário.");
             System.out.println("4. Atualizar dados de cadastro.");
             System.out.println("5. Remover usuário.");
             System.out.println("0. Voltar.");
-            System.out.print("Escolha uma opção: ");
+            System.out.print("\nEscolha uma opção: ");
             int option = scanner.nextInt();
             scanner.nextLine();
 
@@ -104,13 +104,13 @@ public class Main {
         boolean status = true;
         while (status) {
             System.out.println("\n=== Gerenciamento de Empréstimos ===");
-            System.out.println("1. Relatório de empréstimos");
+            System.out.println("\n1. Relatório de empréstimos");
             System.out.println("2. Relatório de livros por usuário");
             System.out.println("3. Relatório de usuários por livro");
             System.out.println("4. Atualizar dados de empréstimo");
             System.out.println("5. Remover registro de empréstimo");
             System.out.println("0. Voltar");
-            System.out.print("Escolha uma opção: ");
+            System.out.print("\nEscolha uma opção: ");
             int option = scanner.nextInt();
             scanner.nextLine();
 

@@ -1,8 +1,5 @@
 package org.example.controllers;
 
-import org.example.exceptions.BookNotFoundException;
-import org.example.exceptions.EmptyFieldException;
-import org.example.exceptions.InvalidInputException;
 import org.example.models.Book;
 import org.example.services.BookService;
 
@@ -20,9 +17,11 @@ public class BookController {
             System.out.print("\nDigite o título do livro (mínimo 3 caracteres): ");
             title = scanner.nextLine();
             if (title.trim().isEmpty()) {
-                throw new EmptyFieldException("O título não pode ser vazio ou composto apenas por espaços.");
+                System.out.println("\nErro: O título não pode ser vazio ou composto apenas por espaços.");
+                return;
             } else if (title.length() < 3) {
-                throw new InvalidInputException("O título deve ter pelo menos 3 caracteres.");
+                System.out.println("\nErro: O título deve ter pelo menos 3 caracteres.");
+                return;
             }
         }
 
@@ -31,14 +30,17 @@ public class BookController {
             System.out.print("Digite o autor do livro (mínimo 3 caracteres): ");
             author = scanner.nextLine();
             if (author.trim().isEmpty()) {
-                throw new EmptyFieldException("Erro: O nome do autor não pode ser vazio ou composto apenas por espaços.");
+                System.out.println("\nErro: O nome do autor não pode ser vazio ou composto apenas por espaços.");
+                return;
             } else if (author.length() < 3) {
-                throw new InvalidInputException("Erro: O nome do autor deve ter pelo menos 3 caracteres.");
+                System.out.println("\nErro: O nome do autor deve ter pelo menos 3 caracteres.");
+                return;
             }
         }
 
         Book book = new Book(0, title, author, true);
         service.addBook(book);
+        System.out.println("\nLivro adicionado com sucesso!");
     }
 
     public void updateBook() {
@@ -49,15 +51,18 @@ public class BookController {
                 bookId = scanner.nextInt();
                 scanner.nextLine();
                 if (bookId <= 0) {
-                    throw new InvalidInputException("Erro: O ID do livro deve ser um número positivo.");
+                    System.out.println("\nErro: O ID do livro deve ser um número positivo.");
+                    return;
                 }
             } else {
-                throw new InvalidInputException("Por favor, insira um número válido para o ID do livro.");
+                System.out.println("\nPor favor, insira um número válido para o ID do livro.");
+                return;
             }
         }
 
         if (service.findBookById(bookId) == null) {
-            throw new BookNotFoundException("Erro: Nenhum livro encontrado com o ID fornecido.");
+            System.out.println("Erro: Nenhum livro encontrado com o ID fornecido.");
+            return;
         }
 
         String title = "";
@@ -65,9 +70,11 @@ public class BookController {
             System.out.print("Digite o título do livro (mínimo 3 caracteres): ");
             title = scanner.nextLine();
             if (title.trim().isEmpty()) {
-                throw new EmptyFieldException("Erro: O título não pode ser vazio ou composto apenas por espaços.");
+                System.out.println("\nErro: O título não pode ser vazio ou composto apenas por espaços.");
+                return;
             } else if (title.length() < 3) {
-                throw new InvalidInputException("Erro: O título deve ter pelo menos 3 caracteres.");
+                System.out.println("\nErro: O título deve ter pelo menos 3 caracteres.");
+                return;
             }
         }
 
@@ -76,9 +83,11 @@ public class BookController {
             System.out.print("Digite o autor do livro (mínimo 3 caracteres): ");
             author = scanner.nextLine();
             if (author.trim().isEmpty()) {
-                throw new EmptyFieldException("Erro: O nome do autor não pode ser vazio ou composto apenas de espaços.");
+                System.out.println("\nErro: O nome do autor não pode ser vazio ou composto apenas de espaços.");
+                return;
             } else if (author.length() < 3) {
-                throw new InvalidInputException("Erro: O nome do autor deve ter pelo menos 3 caracteres.");
+                System.out.println("\nErro: O nome do autor deve ter pelo menos 3 caracteres.");
+                return;
             }
         }
 
@@ -95,15 +104,18 @@ public class BookController {
                 bookId = scanner.nextInt();
                 scanner.nextLine();
                 if (bookId < 0) {
-                    throw new InvalidInputException("Erro: O ID do livro deve ser um número positivo.");
+                    System.out.println("\nErro: O ID do livro deve ser um número positivo.");
+                    return;
                 }
             } else {
-                throw new InvalidInputException("Por favor, insira um número válido para o ID do livro.");
+                System.out.println("Por favor, insira um número válido para o ID do livro.");
+                return;
             }
         }
 
         if (service.findBookById(bookId) == null) {
-            throw new BookNotFoundException("Erro: Não há nenhum livro registrado com o ID fornecido.");
+            System.out.println("\nErro: Não há nenhum livro registrado com o ID fornecido.");
+            return;
         }
 
         System.out.print("Tem certeza que deseja excluir o livro com ID " + bookId + "? (s/n): ");
@@ -124,16 +136,18 @@ public class BookController {
                 bookId = scanner.nextInt();
                 scanner.nextLine();
                 if (bookId <= 0) {
-                    throw new InvalidInputException("Erro: O ID do livro deve ser um número positivo.");
+                    System.out.println("O ID do livro deve ser um número positivo. Tente novamente.");
+                    return;
                 }
             } else {
-                throw new InvalidInputException("Por favor, insira um número válido para o ID do livro.");
+                System.out.println("Por favor, insira um número válido para o ID do livro.");
+                return;
             }
         }
 
         Book book = service.findBookById(bookId);
         if (book == null) {
-            throw new BookNotFoundException("Erro: Não há nenhum livro registrado com o ID informado.");
+            System.out.println("Erro: Não há nenhum livro registrado com o ID informado.");
         } else {
             System.out.println("\nID: " + book.getId()
                     + "\nTítulo: " + book.getTitle()
@@ -146,7 +160,8 @@ public class BookController {
     public void getBooks() {
         List<Book> books = service.getBooks();
         if (books == null || books.isEmpty()) {
-            throw new BookNotFoundException("Erro: Não há livros cadastrados no sistema.");
+            System.out.println("\nErro: Não há livros cadastrados no sistema.");
+            return;
         }
 
         System.out.println("\nLivros encontrados: ");
@@ -166,14 +181,15 @@ public class BookController {
             System.out.print("\nDigite qual livro deseja buscar: ");
             query = scanner.nextLine();
             if (query.trim().isEmpty()) {
-                throw new EmptyFieldException("Erro: A pesquisa não pode ser vazia. Por favor, insira um título ou autor para realizar a busca.");
+                System.out.println("Erro: A pesquisa não pode ser vazia. Por favor, insira um título ou autor para realizar a busca.");
+                return;
             }
         }
 
         List<Book> books = service.searchBooks(query);
 
         if (books.isEmpty()) {
-            throw new BookNotFoundException("Nenhum livro encontrado com o termo de pesquisa: \"" + query + "\".");
+            System.out.println("\"Nenhum livro encontrado com o termo de pesquisa: \\\"\" + query + \"\\\".\"");
         } else {
             System.out.println("\nLivros encontrados: ");
             for (Book book : books) {
@@ -190,7 +206,8 @@ public class BookController {
         List<Book> books = service.getAvailableBooks();
 
         if (books == null || books.isEmpty()) {
-            throw new BookNotFoundException("Erro: Não há livros disponíveis no momento.");
+            System.out.println("Atenção: Não há livros disponíveis no momento.");
+            return;
         }
 
         System.out.println("\nLivros Disponíveis:");
@@ -206,7 +223,8 @@ public class BookController {
         List<Book> books = service.getUnavailableBooks();
 
         if (books == null || books.isEmpty()) {
-            throw new BookNotFoundException("Erro: Todos os livros estão disponíveis no momento.");
+            System.out.println("\nTodos os livros estão disponíveis no momento.");
+            return;
         }
 
         System.out.println("\nLivros Indisponíveis:");
